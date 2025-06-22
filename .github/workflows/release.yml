@@ -1,0 +1,11 @@
+name: release
+
+on:
+  push:
+    tags: [v*]
+
+jobs:
+  go-release:
+    uses: lrstanley/.github/.github/workflows/lang-go-release.yml@master
+    with:
+      upload-artifacts: true

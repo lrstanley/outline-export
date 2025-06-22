@@ -1,0 +1,13 @@
+*.log
+~*
+*.tmp
+tmp
+*.txt
+dist
+*.test
+*.prof
+*.conf
+!/.github/**
+helm-version-updater
+bin
+**/.env
