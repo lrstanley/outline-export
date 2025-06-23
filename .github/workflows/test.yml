@@ -16,12 +16,8 @@ jobs:
       go-version: latest
   go-lint:
     uses: lrstanley/.github/.github/workflows/lang-go-lint.yml@master
-    secrets:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  action-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: lrstanley/YOUR_PROJECT_NAME@master
-        with:
-          check-dir: tests/
+    secrets: inherit
+  docker-test:
+    needs: [go-test, go-lint]
+    uses: lrstanley/.github/.github/workflows/docker-release.yml@master
+    secrets: inherit

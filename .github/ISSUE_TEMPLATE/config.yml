@@ -3,13 +3,13 @@ blank_issues_enabled: false
 contact_links:
   - name: "🙋‍♂️ Ask the community a question!"
     about: Have a question, that might not be a bug? Wondering how to solve a problem? Ask away!
-    url: "https://github.com/lrstanley/YOUR_PROJECT_NAME/discussions/new?category=q-a"
+    url: "https://github.com/lrstanley/outline-export/discussions/new?category=q-a"
   - name: "🎉 Show us what you've made!"
-    about: Have you built something using YOUR_PROJECT_NAME, and want to show others? Post here!
-    url: "https://github.com/lrstanley/YOUR_PROJECT_NAME/discussions/new?category=show-and-tell"
+    about: Have you built something using outline-export, and want to show others? Post here!
+    url: "https://github.com/lrstanley/outline-export/discussions/new?category=show-and-tell"
   - name: "✋ Additional support information"
     about: Looking for something else? Check here.
-    url: "https://github.com/lrstanley/YOUR_PROJECT_NAME/blob/master/.github/SUPPORT.md"
+    url: "https://github.com/lrstanley/outline-export/blob/master/.github/SUPPORT.md"
   - name: "💬 Discord chat"
     about: On-topic and off-topic discussions.
     url: "https://liam.sh/chat"

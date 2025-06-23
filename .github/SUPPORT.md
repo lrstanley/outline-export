@@ -42,14 +42,14 @@ guidelines outlined in our [security policy][security].
 See [`CONTRIBUTING.md`][contributing] on how to contribute.
 
 <!-- definitions -->
-[coc]: https://github.com/lrstanley/YOUR_PROJECT_NAME/blob/master/.github/CODE_OF_CONDUCT.md
-[contributing]: https://github.com/lrstanley/YOUR_PROJECT_NAME/blob/master/.github/CONTRIBUTING.md
-[discussions]: https://github.com/lrstanley/YOUR_PROJECT_NAME/discussions/categories/q-a
-[issues]: https://github.com/lrstanley/YOUR_PROJECT_NAME/issues/new/choose
-[license]: https://github.com/lrstanley/YOUR_PROJECT_NAME/blob/master/LICENSE
-[pull-requests]: https://github.com/lrstanley/YOUR_PROJECT_NAME/issues/new/choose
-[security]: https://github.com/lrstanley/YOUR_PROJECT_NAME/security/policy
-[support]: https://github.com/lrstanley/YOUR_PROJECT_NAME/blob/master/.github/SUPPORT.md
+[coc]: https://github.com/lrstanley/outline-export/blob/master/.github/CODE_OF_CONDUCT.md
+[contributing]: https://github.com/lrstanley/outline-export/blob/master/.github/CONTRIBUTING.md
+[discussions]: https://github.com/lrstanley/outline-export/discussions/categories/q-a
+[issues]: https://github.com/lrstanley/outline-export/issues/new/choose
+[license]: https://github.com/lrstanley/outline-export/blob/master/LICENSE
+[pull-requests]: https://github.com/lrstanley/outline-export/issues/new/choose
+[security]: https://github.com/lrstanley/outline-export/security/policy
+[support]: https://github.com/lrstanley/outline-export/blob/master/.github/SUPPORT.md
 
 [xy]: https://meta.stackexchange.com/questions/66377/what-is-the-xy-problem/66378#66378
 [chat]: https://liam.sh/chat

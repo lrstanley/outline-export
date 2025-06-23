@@ -1,22 +1,15 @@
-.DEFAULT_GOAL := build-all
+.DEFAULT_GOAL := build
 
-export PROJECT := "YOUR_PROJECT_NAME"
-export PACKAGE := "github.com/lrstanley/YOUR_PROJECT_NAME"
+export PROJECT := "outline-export"
+export PACKAGE := "github.com/lrstanley/outline-export"
 
 license:
 	curl -sL https://liam.sh/-/gh/g/license-header.sh | bash -s
 
-prepare: clean go-prepare
-	@echo
-
-build-all: prepare go-build
-	@echo
-
 clean:
 	/bin/rm -rfv ${PROJECT}
 
-go-fetch:
-	go mod download
+fetch:
 	go mod tidy
 
 up:
@@ -24,23 +17,27 @@ up:
 	go get -u -t ./...
 	go mod tidy
 
-go-prepare: go-fetch
+prepare: clean fetch
 	go generate -x ./...
+	{ echo '## :gear: Usage'; go run ${PACKAGE} --generate-markdown --url "foo" --token "bar" --export-path "baz" --format markdown; } > USAGE.md
 
-go-dlv: go-prepare
+dlv: prepare
 	dlv debug \
 		--headless --listen=:2345 \
 		--api-version=2 --log \
 		--allow-non-terminal-interactive \
-		${PACKAGE} -- --debug
+		${PACKAGE} -- \
+		--debug
 
-go-debug: go-prepare
+debug: prepare
+	rm -rf ./tmp
 	go run ${PACKAGE} \
 		--debug \
-		--dry-run \
-		--check-dir ./tests/
+		--extract \
+		--format markdown \
+		--export-path ./tmp/
 
-go-build: go-prepare
+build: prepare
 	CGO_ENABLED=0 \
 	go build \
 		-ldflags '-d -s -w -extldflags=-static' \

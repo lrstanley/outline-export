@@ -1,5 +1,5 @@
 <!--
-  🙏 Thanks for submitting a pull request to YOUR_PROJECT_NAME! Please make sure to read our
+  🙏 Thanks for submitting a pull request to outline-export! Please make sure to read our
   Contributing Guidelines, and Code of Conduct.
 
   ❌ You can remove any sections of this template that are not applicable to your PR.

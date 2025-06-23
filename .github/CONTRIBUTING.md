@@ -101,11 +101,11 @@ Below are a few guidelines if you would like to contribute:
    * [Code of Conduct][coc].
 
 <!-- definitions -->
-[coc]: https://github.com/lrstanley/YOUR_PROJECT_NAME/blob/master/.github/CODE_OF_CONDUCT.md
+[coc]: https://github.com/lrstanley/outline-export/blob/master/.github/CODE_OF_CONDUCT.md
 [dco]: https://developercertificate.org/
-[discussions]: https://github.com/lrstanley/YOUR_PROJECT_NAME/discussions
-[issues]: https://github.com/lrstanley/YOUR_PROJECT_NAME/issues/new/choose
-[license]: https://github.com/lrstanley/YOUR_PROJECT_NAME/blob/master/LICENSE
-[pull-requests]: https://github.com/lrstanley/YOUR_PROJECT_NAME/pulls?q=is%3Aopen+is%3Apr
-[security]: https://github.com/lrstanley/YOUR_PROJECT_NAME/security/policy
-[support]: https://github.com/lrstanley/YOUR_PROJECT_NAME/blob/master/.github/SUPPORT.md
+[discussions]: https://github.com/lrstanley/outline-export/discussions
+[issues]: https://github.com/lrstanley/outline-export/issues/new/choose
+[license]: https://github.com/lrstanley/outline-export/blob/master/LICENSE
+[pull-requests]: https://github.com/lrstanley/outline-export/pulls?q=is%3Aopen+is%3Apr
+[security]: https://github.com/lrstanley/outline-export/security/policy
+[support]: https://github.com/lrstanley/outline-export/blob/master/.github/SUPPORT.md

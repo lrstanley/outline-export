@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### Thanks for submitting a bug report to **YOUR_PROJECT_NAME**! 📋
+        ### Thanks for submitting a bug report to **outline-export**! 📋
 
         - 💬 Make sure to check out the [**discussions**](../discussions) section. If your issue isn't a bug (or you're not sure), and you're looking for help to solve it, please [start a discussion here](../discussions/new?category=q-a) first.
         - 🔎 Please [**search**](../labels/bug) to see if someone else has submitted a similar bug report, before making a new report.
@@ -43,8 +43,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: "💠 Version: YOUR_PROJECT_NAME"
-      description: What version of YOUR_PROJECT_NAME is being used?
+      label: "💠 Version: outline-export"
+      description: What version of outline-export is being used?
       placeholder: 'Examples: "v1.2.3, master branch, commit 1a2b3c"'
     validations:
       required: true
