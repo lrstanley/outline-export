@@ -9,6 +9,7 @@ jobs:
     uses: lrstanley/.github/.github/workflows/lang-go-release.yml@master
     with:
       upload-artifacts: true
+      has-ghcr: true
   docker-release:
     uses: lrstanley/.github/.github/workflows/docker-release.yml@master
     secrets: inherit
