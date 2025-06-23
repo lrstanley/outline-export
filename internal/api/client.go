@@ -18,14 +18,6 @@ import (
 	"github.com/apex/log"
 )
 
-// Needed scopes:
-// - collections.export_all
-// - fileOperations.info
-// - fileOperations.list
-// - fileOperations.redirect
-// - fileOperations.delete
-// - collections.export_all
-
 const DefaultBaseURL = "https://app.getoutline.com"
 
 type Config struct {

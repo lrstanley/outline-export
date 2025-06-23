@@ -44,6 +44,7 @@ func prepareRequest(
 	}
 
 	req.Header.Set("Authorization", "Bearer "+client.Config.Token)
+	req.Header.Set("User-Agent", "outline-export")
 
 	if params != nil {
 		query := req.URL.Query()
