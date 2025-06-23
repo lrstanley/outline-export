@@ -9,6 +9,9 @@
 <!-- do not edit anything in this "template" block, its auto-generated -->
 
 <p align="center">
+  <a href="https://github.com/lrstanley/outline-export/releases">
+    <img title="Release Downloads" src="https://img.shields.io/github/downloads/lrstanley/outline-export/total?style=flat-square">
+  </a>
   <a href="https://github.com/lrstanley/outline-export/tags">
     <img title="Latest Semver Tag" src="https://img.shields.io/github/v/tag/lrstanley/outline-export?style=flat-square">
   </a>
@@ -44,6 +47,10 @@
   </a>
   <a href="https://github.com/lrstanley/outline-export/pulls">
     <img title="Open Pull Requests" src="https://img.shields.io/github/issues-pr/lrstanley/outline-export?label=prs&style=flat-square">
+  </a>
+  <a href="https://github.com/lrstanley/outline-export/releases">
+    <img title="Latest Semver Release" src="https://img.shields.io/github/v/release/lrstanley/outline-export?style=flat-square">
+    <img title="Latest Release Date" src="https://img.shields.io/github/release-date/lrstanley/outline-export?label=date&style=flat-square">
   </a>
   <a href="https://github.com/lrstanley/outline-export/discussions/new?category=q-a">
     <img title="Ask a Question" src="https://img.shields.io/badge/support-ask_a_question!-blue?style=flat-square">
