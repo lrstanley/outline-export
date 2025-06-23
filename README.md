@@ -3,7 +3,7 @@
   "nodescription": true
 }
 -->
-![logo](https://liam.sh/-/gh/svg/lrstanley/outline-export?icon=logos%3Amarkdown&icon.height=80&bg=topography&bgcolor=rgba(2%2C+0%2C+26%2C+1)&layout=left)
+![logo](https://liam.sh/-/gh/svg/lrstanley/outline-export?layout=left&bg=geometric&icon=material-symbols%3Amarkdown&icon.height=80)
 
 <!-- template:begin:header -->
 <!-- do not edit anything in this "template" block, its auto-generated -->
