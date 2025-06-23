@@ -12,6 +12,7 @@ on:
 jobs:
   go-test:
     uses: lrstanley/.github/.github/workflows/lang-go-test-matrix.yml@master
+    secrets: inherit
     with:
       go-version: latest
   go-lint:
