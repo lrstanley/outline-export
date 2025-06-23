@@ -157,7 +157,7 @@ $ export TOKEN="1234567890"
 $ outline-export \
     --url "https://outline.example.com" \
     --export-path "outline-backup-$(date +%Y-%m-%d).zip" \
-    --format zip
+    --format markdown
 ```
 
 <!-- template:begin:support -->
