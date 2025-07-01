@@ -4,7 +4,7 @@ go 1.24.4
 
 require (
 	github.com/apex/log v1.9.0
-	github.com/lrstanley/clix v1.0.9
+	github.com/lrstanley/clix v1.0.10
 )
 
 require (

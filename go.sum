@@ -31,8 +31,8 @@ github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFB
 github.com/kr/pretty v0.2.0/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/lrstanley/clix v1.0.9 h1:RJRox1aBVjSnbEp+uejK6+CWkR4/G28xpPBk4BopO7g=
-github.com/lrstanley/clix v1.0.9/go.mod h1:9+TKa12U/4vpHBhaBMq+6lii2UtmYf5xDSd3H9eitwQ=
+github.com/lrstanley/clix v1.0.10 h1:uQ6zHdza5ahVzAZi/zhO4pUiGjM3u+7TWffY+c3OaBI=
+github.com/lrstanley/clix v1.0.10/go.mod h1:FrLSmDlQ6GUbixXDLXfSDVrgF01lIZDUW+yT6CmnX0E=
 github.com/mattn/go-colorable v0.1.1/go.mod h1:FuOcm+DKB9mbwrcAfNl7/TZVBZ6rcnceauSikq3lYCQ=
 github.com/mattn/go-colorable v0.1.2/go.mod h1:U0ppj6V5qS13XJ6of8GYAs25YV2eR4EVcfRqFIhoBtE=
 github.com/mattn/go-colorable v0.1.14 h1:9A9LHSqF/7dyVVX6g0U9cwm9pG3kP9gSzcuIPHPsaIE=
