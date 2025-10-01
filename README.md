@@ -100,6 +100,9 @@ $ docker run -it --rm -e TOKEN=ol_api_1234567890 -v $PWD/backups:/backups ghcr.i
     --format markdown
 ```
 
+> [!NOTE]
+> If your instance of Outline is LAN only you may need to run outline-export on the host network. You can do this by including `--network host` on the first line (`docker run -it --rm --network host...`)
+
 ### :toolbox: Build From Source
 
 Dependencies (to build from source only):
