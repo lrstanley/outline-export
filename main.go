@@ -36,7 +36,7 @@ type Flags struct {
 	ExcludeAttachments bool     `name:"exclude-attachments" env:"EXCLUDE_ATTACHMENTS" help:"Exclude attachments from the export"`
 	Extract            bool     `name:"extract" env:"EXTRACT" help:"Extract the export into the target directory"`
 	ExportPath         string   `name:"export-path" env:"EXPORT_PATH" required:"" help:"Path to export the file to. If extract is enabled, this will be the directory to extract the export to."`
-	Filters            []string `name:"filters" env:"FILTERS" help:"Filters the export to only include certain files (when using --extract). This is a glob pattern, and it matches the files/folders inside of the export zip, not necessarily collections/document exact names. Can be specified multiple times."`
+	Filters            []string `name:"filters" env:"FILTERS" help:"Filters the export to only include certain files (when using --extract). This is a glob pattern, and it matches the files/folders inside of the export zip, not necessarily collections/document exact names."`
 }
 
 func main() {
