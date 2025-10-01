@@ -123,7 +123,7 @@ func main() {
 			log.FromContext(ctx).WithError(err).Fatal("failed to list file operations")
 		}
 
-		if op.Type != api.FileOperationTypeExport || op.Format != format || time.Since(op.CreatedAt) > 1*time.Hour {
+		if op.Type != api.FileOperationTypeExport || op.Format != format || op.State == api.FileOperationStateError || time.Since(op.CreatedAt) > 1*time.Hour {
 			continue
 		}
 
@@ -134,7 +134,8 @@ func main() {
 
 		err = client.DeleteFileOperation(dctx, op.ID)
 		if err != nil {
-			log.FromContext(dctx).WithError(err).Fatal("failed to delete export")
+			log.FromContext(dctx).WithError(err).Error("failed to delete export")
+			continue
 		}
 
 		log.FromContext(dctx).Info("deleted export")

@@ -4,7 +4,10 @@
 
 package api
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 const (
 	ExportFormatMarkdown ExportFormat = "outline-markdown"
@@ -48,6 +51,32 @@ type FileOperationError struct {
 	Message string         `json:"message,omitempty"`
 	Ok      bool           `json:"ok,omitempty"`
 	Status  float32        `json:"status,omitempty"`
+}
+
+func (e *FileOperationError) UnmarshalJSON(data []byte) error {
+	// Error field may be a string, or an object.
+	var serr struct {
+		Data    map[string]any `json:"data,omitempty"`
+		Error   string         `json:"error,omitempty"`
+		Message string         `json:"message,omitempty"`
+		Ok      bool           `json:"ok,omitempty"`
+		Status  float32        `json:"status,omitempty"`
+	}
+	if err := json.Unmarshal(data, &serr); err == nil {
+		e.Data = serr.Data
+		e.Error = serr.Error
+		e.Message = serr.Message
+		e.Ok = serr.Ok
+		e.Status = serr.Status
+		return nil
+	}
+	err := json.Unmarshal(data, &e.Error)
+	if err == nil {
+		e.Message = e.Error
+		e.Ok = false
+		return nil
+	}
+	return err
 }
 
 type Pagination struct {
