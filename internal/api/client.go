@@ -10,12 +10,11 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/apex/log"
 )
 
 const DefaultBaseURL = "https://app.getoutline.com"
@@ -23,6 +22,7 @@ const DefaultBaseURL = "https://app.getoutline.com"
 type Config struct {
 	BaseURL string
 	Token   string
+	Logger  *slog.Logger
 }
 
 type Client struct {
@@ -33,6 +33,10 @@ type Client struct {
 func NewClient(config *Config) (*Client, error) {
 	if config == nil {
 		config = &Config{}
+	}
+
+	if config.Logger == nil {
+		config.Logger = slog.Default()
 	}
 
 	if config.BaseURL == "" {
@@ -190,7 +194,7 @@ func (c *Client) WaitForFileOperation(ctx context.Context, id string) (*FileOper
 		case FileOperationStateExpired:
 			return nil, errors.New("file operation expired")
 		case FileOperationStateCreating, FileOperationStateUploading:
-			log.FromContext(ctx).WithField("state", op.State).Debug("waiting for file operation to complete")
+			slog.InfoContext(ctx, "waiting for file operation to complete", "state", op.State)
 			time.Sleep(2 * time.Second)
 			continue
 		default:

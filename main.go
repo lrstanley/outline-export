@@ -9,6 +9,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/url"
 	"os"
 	"path"
@@ -17,8 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/apex/log"
-	"github.com/lrstanley/clix"
+	"github.com/lrstanley/clix/v2"
 	"github.com/lrstanley/outline-export/internal/api"
 )
 
@@ -26,39 +26,37 @@ var (
 	version = "master"
 	commit  = "latest"
 	date    = "-"
-
-	cli = &clix.CLI[Flags]{
-		Links: clix.GithubLinks("github.com/lrstanley/outline-export", "master", "https://liam.sh"),
-		VersionInfo: &clix.VersionInfo[Flags]{
-			Version: version,
-			Commit:  commit,
-			Date:    date,
-		},
-	}
+	cli     = &clix.CLI[Flags]{}
 )
 
 type Flags struct {
-	URL                string   `long:"url" env:"URL" required:"true" description:"URL of the Outline server"`
-	Token              string   `long:"token" env:"TOKEN" required:"true" description:"Token for the Outline server"`
-	Format             string   `long:"format" env:"FORMAT" required:"true" choice:"markdown" choice:"html" choice:"json" description:"Format of the export"`
-	ExcludeAttachments bool     `long:"exclude-attachments" env:"EXCLUDE_ATTACHMENTS" description:"Exclude attachments from the export"`
-	Extract            bool     `long:"extract" env:"EXTRACT" description:"Extract the export into the target directory"`
-	ExportPath         string   `long:"export-path" env:"EXPORT_PATH" required:"true" description:"Path to export the file to. If extract is enabled, this will be the directory to extract the export to."`
-	Filters            []string `long:"filter" env:"FILTER" env-delim:"," description:"Filters the export to only include certain files (when using --extract). This is a glob pattern, and it matches the files/folders inside of the export zip, not necessarily collections/document exact names. Can be specified multiple times."`
+	URL                string   `name:"url" env:"URL" required:"" help:"URL of the Outline server"`
+	Token              string   `name:"token" env:"TOKEN" required:"" help:"Token for the Outline server"`
+	Format             string   `name:"format" env:"FORMAT" required:"" enum:"markdown,html,json" help:"Format of the export"`
+	ExcludeAttachments bool     `name:"exclude-attachments" env:"EXCLUDE_ATTACHMENTS" help:"Exclude attachments from the export"`
+	Extract            bool     `name:"extract" env:"EXTRACT" help:"Extract the export into the target directory"`
+	ExportPath         string   `name:"export-path" env:"EXPORT_PATH" required:"" help:"Path to export the file to. If extract is enabled, this will be the directory to extract the export to."`
+	Filters            []string `name:"filters" env:"FILTERS" help:"Filters the export to only include certain files (when using --extract). This is a glob pattern, and it matches the files/folders inside of the export zip, not necessarily collections/document exact names. Can be specified multiple times."`
 }
 
 func main() {
-	cli.LoggerConfig.Pretty = true
-	cli.Parse()
+	cli.ParseWithDefaults(clix.WithAppInfo[Flags](clix.AppInfo{
+		Version: version,
+		Commit:  commit,
+		Date:    date,
+	}))
 
-	ctx := log.NewContext(context.Background(), cli.Logger)
+	ctx := context.Background()
+	logger := cli.GetLogger()
 
 	client, err := api.NewClient(&api.Config{
 		BaseURL: cli.Flags.URL,
 		Token:   cli.Flags.Token,
+		Logger:  logger,
 	})
 	if err != nil {
-		log.FromContext(ctx).WithError(err).Fatal("failed to create client")
+		logger.Error("failed to create client", "error", err)
+		os.Exit(1)
 	}
 
 	var format api.ExportFormat
@@ -70,14 +68,16 @@ func main() {
 	case "json":
 		format = api.ExportFormatJSON
 	default:
-		log.FromContext(ctx).WithField("format", cli.Flags.Format).Fatal("invalid format")
+		logger.Error("invalid format", "format", cli.Flags.Format)
+		os.Exit(1)
 	}
 
 	var operation *api.FileOperation
 
 	for op, err := range client.ListFileOperations(ctx) {
 		if err != nil {
-			log.FromContext(ctx).WithError(err).Fatal("failed to list file operations")
+			logger.Error("failed to list file operations", "error", err)
+			os.Exit(1)
 		}
 
 		if op.Type != api.FileOperationTypeExport || op.Format != format || time.Since(op.CreatedAt) > 1*time.Hour {
@@ -85,11 +85,7 @@ func main() {
 		}
 
 		if op.State == api.FileOperationStateComplete || op.State == api.FileOperationStateCreating || op.State == api.FileOperationStateUploading {
-			log.FromContext(ctx).WithFields(log.Fields{
-				"id":   op.ID,
-				"name": op.Name,
-			}).Info("found existing export")
-
+			logger.Info("found existing export", "id", op.ID, "name", op.Name)
 			operation = op
 			break
 		}
@@ -98,7 +94,8 @@ func main() {
 	if operation == nil {
 		operation, err = client.GenerateExport(ctx, format, !cli.Flags.ExcludeAttachments)
 		if err != nil {
-			log.FromContext(ctx).WithError(err).Fatal("failed to generate export")
+			logger.Error("failed to generate export", "error", err)
+			os.Exit(1)
 		}
 	}
 
@@ -108,37 +105,40 @@ func main() {
 
 	operation, err = client.WaitForFileOperation(tctx, operation.ID)
 	if err != nil {
-		log.FromContext(ctx).WithError(err).Fatal("failed to wait for file operation")
+		logger.Error("failed to wait for file operation", "error", err)
+		os.Exit(1)
 	}
 
 	err = downloadExport(ctx, client, operation)
 	if err != nil {
-		log.FromContext(ctx).WithError(err).Fatal("failed to download export")
+		logger.Error("failed to download export", "error", err)
+		os.Exit(1)
 	}
-	log.FromContext(ctx).Info("export downloaded")
+	logger.Info("export downloaded")
 
 	// Delete all recently created exports, within the last 1 hour, that match our format.
 	for op, err := range client.ListFileOperations(ctx) {
 		if err != nil {
-			log.FromContext(ctx).WithError(err).Fatal("failed to list file operations")
+			logger.Error("failed to list file operations", "error", err)
+			os.Exit(1)
 		}
 
 		if op.Type != api.FileOperationTypeExport || op.Format != format || op.State == api.FileOperationStateError || time.Since(op.CreatedAt) > 1*time.Hour {
 			continue
 		}
 
-		dctx := log.NewContext(ctx, log.FromContext(ctx).WithFields(log.Fields{
-			"id":   op.ID,
-			"name": op.Name,
-		}))
-
-		err = client.DeleteFileOperation(dctx, op.ID)
+		err = client.DeleteFileOperation(ctx, op.ID)
 		if err != nil {
-			log.FromContext(dctx).WithError(err).Error("failed to delete export")
+			logger.Error(
+				"failed to delete export",
+				"id", op.ID,
+				"name", op.Name,
+				"error", err,
+			)
 			continue
 		}
 
-		log.FromContext(dctx).Info("deleted export")
+		logger.Info("deleted export", "id", op.ID, "name", op.Name)
 	}
 }
 
@@ -164,8 +164,6 @@ func downloadExport(ctx context.Context, client *api.Client, operation *api.File
 			return fmt.Errorf("failed to create export directory %q: %w", cli.Flags.ExportPath, err)
 		}
 
-		ctx := log.NewContext(ctx, log.FromContext(ctx).WithField("file", cli.Flags.ExportPath))
-
 		f, err := os.OpenFile(cli.Flags.ExportPath, os.O_CREATE|os.O_WRONLY, 0o600)
 		if err != nil {
 			return fmt.Errorf("failed to initialize export file %q: %w", cli.Flags.ExportPath, err)
@@ -176,7 +174,7 @@ func downloadExport(ctx context.Context, client *api.Client, operation *api.File
 			return fmt.Errorf("failed to copy export to file %q: %w", cli.Flags.ExportPath, err)
 		}
 
-		log.FromContext(ctx).Info("export file written")
+		slog.InfoContext(ctx, "export file written", "file", cli.Flags.ExportPath)
 		return nil
 	}
 
@@ -223,8 +221,6 @@ func downloadExport(ctx context.Context, client *api.Client, operation *api.File
 		// Join the parts back together.
 		name := filepath.Join(parts...)
 
-		fctx := log.NewContext(ctx, log.FromContext(ctx).WithField("path", name))
-
 		if len(cli.Flags.Filters) > 0 {
 			var matched bool
 			for _, filter := range cli.Flags.Filters {
@@ -238,7 +234,7 @@ func downloadExport(ctx context.Context, client *api.Client, operation *api.File
 			}
 
 			if !matched {
-				log.FromContext(fctx).Warn("skipping file/folder (does not match filter)")
+				slog.WarnContext(ctx, "skipping file/folder (does not match filter)", "path", name)
 				continue
 			}
 		}
@@ -249,7 +245,7 @@ func downloadExport(ctx context.Context, client *api.Client, operation *api.File
 		}
 
 		if f.FileInfo().IsDir() {
-			log.FromContext(fctx).Info("creating directory")
+			slog.InfoContext(ctx, "creating directory", "path", name)
 
 			err = os.MkdirAll(path.Join(cli.Flags.ExportPath, name), 0o700)
 			if err != nil {
@@ -261,7 +257,7 @@ func downloadExport(ctx context.Context, client *api.Client, operation *api.File
 			continue
 		}
 
-		log.FromContext(fctx).Info("creating file")
+		slog.InfoContext(ctx, "creating file", "path", name)
 		outf, err := os.OpenFile(path.Join(cli.Flags.ExportPath, name), os.O_CREATE|os.O_WRONLY, 0o600)
 		if err != nil {
 			_ = inf.Close()

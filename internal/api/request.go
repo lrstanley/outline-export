@@ -10,10 +10,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"time"
-
-	"github.com/apex/log"
 )
 
 // prepareRequest prepares a request for the given client, method, path, params, and body.
@@ -76,12 +75,12 @@ func request[T any](
 		return result, err
 	}
 
-	logger := log.FromContext(ctx).WithFields(log.Fields{
-		"method": req.Method,
-		"url":    req.URL.String(),
-	})
+	logger := slog.With(
+		"method", req.Method,
+		"url", req.URL.String(),
+	)
 
-	logger.Debug("sending request")
+	logger.DebugContext(ctx, "sending request")
 	start := time.Now()
 	resp, err := client.HTTPClient.Do(req)
 	if err != nil {
@@ -89,21 +88,21 @@ func request[T any](
 	}
 	defer resp.Body.Close() //nolint:errcheck
 
-	logger = logger.WithFields(log.Fields{
-		"status":   resp.Status,
-		"duration": time.Since(start).Round(time.Millisecond),
-	})
+	logger = logger.With(
+		"status", resp.Status,
+		"duration", time.Since(start).Round(time.Millisecond),
+	)
 
 	if resp.StatusCode >= 299 {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return result, fmt.Errorf("failed to read body: %w", err)
 		}
-		logger.WithField("body", string(body)).Error("request failed")
+		logger.ErrorContext(ctx, "request failed", "body", string(body))
 
 		return result, fmt.Errorf("request failed with status code %d", resp.StatusCode)
 	}
-	logger.Debug("request completed")
+	logger.DebugContext(ctx, "request completed")
 
 	// Decode and wrap in generics. if type of T is string, return the body as a string.
 	if _, ok := any(result).(string); ok {
@@ -131,12 +130,12 @@ func requestStream(
 		return nil, err
 	}
 
-	logger := log.FromContext(ctx).WithFields(log.Fields{
-		"method": req.Method,
-		"url":    req.URL.String(),
-	})
+	logger := slog.With(
+		"method", req.Method,
+		"url", req.URL.String(),
+	)
 
-	logger.Debug("sending request")
+	logger.DebugContext(ctx, "sending request")
 	start := time.Now()
 
 	resp, err := client.HTTPClient.Do(req)
@@ -144,17 +143,17 @@ func requestStream(
 		return nil, err
 	}
 
-	logger = logger.WithFields(log.Fields{
-		"status":   resp.Status,
-		"duration": time.Since(start).Round(time.Millisecond),
-	})
+	logger = logger.With(
+		"status", resp.Status,
+		"duration", time.Since(start).Round(time.Millisecond),
+	)
 
 	if resp.StatusCode >= 299 {
 		defer resp.Body.Close() //nolint:errcheck
-		logger.Error("request failed")
+		logger.ErrorContext(ctx, "request failed")
 		return nil, fmt.Errorf("request failed with status code %d", resp.StatusCode)
 	}
 
-	logger.Debug("request completed")
+	logger.DebugContext(ctx, "request completed")
 	return resp.Body, nil
 }

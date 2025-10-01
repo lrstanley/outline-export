@@ -19,7 +19,7 @@ up:
 
 prepare: clean fetch
 	go generate -x ./...
-	{ echo '## :gear: Usage'; go run ${PACKAGE} --generate-markdown --url "foo" --token "bar" --export-path "baz" --format markdown; } > USAGE.md
+	go run . generate-markdown > USAGE.md
 
 dlv: prepare
 	dlv debug \
