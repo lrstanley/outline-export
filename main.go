@@ -26,7 +26,13 @@ var (
 	version = "master"
 	commit  = "latest"
 	date    = "-"
-	cli     = &clix.CLI[Flags]{}
+	cli     = clix.NewWithDefaults(
+		clix.WithAppInfo[Flags](clix.AppInfo{
+			Version: version,
+			Commit:  commit,
+			Date:    date,
+		}),
+	)
 )
 
 type Flags struct {
@@ -40,12 +46,6 @@ type Flags struct {
 }
 
 func main() {
-	cli.ParseWithDefaults(clix.WithAppInfo[Flags](clix.AppInfo{
-		Version: version,
-		Commit:  commit,
-		Date:    date,
-	}))
-
 	ctx := context.Background()
 	logger := cli.GetLogger()
 
