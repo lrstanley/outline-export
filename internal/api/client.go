@@ -17,12 +17,16 @@ import (
 	"time"
 )
 
-const DefaultBaseURL = "https://app.getoutline.com"
+const (
+	DefaultBaseURL     = "https://app.getoutline.com"
+	DefaultHTTPTimeout = 60 * time.Second
+)
 
 type Config struct {
-	BaseURL string
-	Token   string
-	Logger  *slog.Logger
+	BaseURL     string
+	Token       string
+	Logger      *slog.Logger
+	HTTPTimeout time.Duration
 }
 
 type Client struct {
@@ -33,6 +37,10 @@ type Client struct {
 func NewClient(config *Config) (*Client, error) {
 	if config == nil {
 		config = &Config{}
+	}
+
+	if config.HTTPTimeout == 0 {
+		config.HTTPTimeout = DefaultHTTPTimeout
 	}
 
 	if config.Logger == nil {
@@ -51,7 +59,7 @@ func NewClient(config *Config) (*Client, error) {
 
 	return &Client{
 		HTTPClient: &http.Client{
-			Timeout: 10 * time.Second,
+			Timeout: config.HTTPTimeout,
 		},
 		Config: config,
 	}, nil

@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/alecthomas/kong"
 	"github.com/lrstanley/clix/v2"
 	"github.com/lrstanley/outline-export/internal/api"
 )
@@ -32,17 +33,21 @@ var (
 			Commit:  commit,
 			Date:    date,
 		}),
+		clix.WithKongOptions[Flags](kong.Vars{
+			"HTTP_TIMEOUT": api.DefaultHTTPTimeout.Round(time.Second).String(),
+		}),
 	)
 )
 
 type Flags struct {
-	URL                string   `name:"url" env:"URL" required:"" help:"URL of the Outline server"`
-	Token              string   `name:"token" env:"TOKEN" required:"" help:"Token for the Outline server"`
-	Format             string   `name:"format" env:"FORMAT" required:"" enum:"markdown,html,json" help:"Format of the export"`
-	ExcludeAttachments bool     `name:"exclude-attachments" env:"EXCLUDE_ATTACHMENTS" help:"Exclude attachments from the export"`
-	Extract            bool     `name:"extract" env:"EXTRACT" help:"Extract the export into the target directory"`
-	ExportPath         string   `name:"export-path" env:"EXPORT_PATH" required:"" help:"Path to export the file to. If extract is enabled, this will be the directory to extract the export to."`
-	Filters            []string `name:"filters" env:"FILTERS" help:"Filters the export to only include certain files (when using --extract). This is a glob pattern, and it matches the files/folders inside of the export zip, not necessarily collections/document exact names."`
+	URL                string        `name:"url" env:"URL" required:"" help:"URL of the Outline server"`
+	Token              string        `name:"token" env:"TOKEN" required:"" help:"Token for the Outline server"`
+	Format             string        `name:"format" env:"FORMAT" required:"" enum:"markdown,html,json" help:"Format of the export"`
+	ExcludeAttachments bool          `name:"exclude-attachments" env:"EXCLUDE_ATTACHMENTS" help:"Exclude attachments from the export"`
+	Extract            bool          `name:"extract" env:"EXTRACT" help:"Extract the export into the target directory"`
+	ExportPath         string        `name:"export-path" env:"EXPORT_PATH" required:"" help:"Path to export the file to. If extract is enabled, this will be the directory to extract the export to."`
+	Filters            []string      `name:"filters" env:"FILTERS" help:"Filters the export to only include certain files (when using --extract). This is a glob pattern, and it matches the files/folders inside of the export zip, not necessarily collections/document exact names."`
+	HTTPTimeout        time.Duration `name:"http-timeout" env:"HTTP_TIMEOUT" default:"${HTTP_TIMEOUT}" help:"Timeout for HTTP requests to the Outline server"`
 }
 
 func main() {
@@ -50,9 +55,10 @@ func main() {
 	logger := cli.GetLogger()
 
 	client, err := api.NewClient(&api.Config{
-		BaseURL: cli.Flags.URL,
-		Token:   cli.Flags.Token,
-		Logger:  logger,
+		BaseURL:     cli.Flags.URL,
+		Token:       cli.Flags.Token,
+		Logger:      logger,
+		HTTPTimeout: cli.Flags.HTTPTimeout,
 	})
 	if err != nil {
 		logger.Error("failed to create client", "error", err)
