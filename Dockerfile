@@ -8,7 +8,7 @@ RUN \
 	--mount=type=cache,target=/go \
 	make build
 
-FROM alpine:3.22
+FROM alpine:3.23
 RUN apk add --no-cache ca-certificates
 COPY --from=build /build/outline-export /usr/local/bin/outline-export
 
