@@ -44,6 +44,7 @@ type Flags struct {
 	Token              string        `name:"token" env:"TOKEN" required:"" help:"Token for the Outline server"`
 	Format             string        `name:"format" env:"FORMAT" required:"" enum:"markdown,html,json" help:"Format of the export"`
 	ExcludeAttachments bool          `name:"exclude-attachments" env:"EXCLUDE_ATTACHMENTS" help:"Exclude attachments from the export"`
+	ExcludePrivate     bool          `name:"exclude-private" env:"EXCLUDE_PRIVATE" help:"Exclude private collections from the export"`
 	Extract            bool          `name:"extract" env:"EXTRACT" help:"Extract the export into the target directory"`
 	ExportPath         string        `name:"export-path" env:"EXPORT_PATH" required:"" help:"Path to export the file to. If extract is enabled, this will be the directory to extract the export to."`
 	Filters            []string      `name:"filters" env:"FILTERS" help:"Filters the export to only include certain files (when using --extract). This is a glob pattern, and it matches the files/folders inside of the export zip, not necessarily collections/document exact names."`
@@ -98,7 +99,7 @@ func main() {
 	}
 
 	if operation == nil {
-		operation, err = client.GenerateExport(ctx, format, !cli.Flags.ExcludeAttachments)
+		operation, err = client.GenerateExport(ctx, format, !cli.Flags.ExcludeAttachments, !cli.Flags.ExcludePrivate)
 		if err != nil {
 			logger.Error("failed to generate export", "error", err)
 			os.Exit(1)

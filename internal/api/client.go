@@ -68,7 +68,7 @@ func NewClient(config *Config) (*Client, error) {
 // GenerateExport generates an export of all collections. Note that it will likely
 // be pending once returned, and you should poll until it's ready. See
 // [WaitForFileOperation] and [GenerateExportAndWait] for more information.
-func (c *Client) GenerateExport(ctx context.Context, format ExportFormat, includeAttachments bool) (*FileOperation, error) {
+func (c *Client) GenerateExport(ctx context.Context, format ExportFormat, includeAttachments bool, includePrivate bool) (*FileOperation, error) {
 	type Response struct {
 		Data struct {
 			FileOperation *FileOperation `json:"fileOperation"`
@@ -81,6 +81,7 @@ func (c *Client) GenerateExport(ctx context.Context, format ExportFormat, includ
 		map[string]any{
 			"format":             format,
 			"includeAttachments": includeAttachments,
+			"includePrivate":     includePrivate,
 		},
 	)
 	if err != nil {
@@ -90,8 +91,8 @@ func (c *Client) GenerateExport(ctx context.Context, format ExportFormat, includ
 }
 
 // GenerateExportAndWait generates an export of all collections and waits for it to complete.
-func (c *Client) GenerateExportAndWait(ctx context.Context, format ExportFormat, includeAttachments bool) (*FileOperation, error) {
-	op, err := c.GenerateExport(ctx, format, includeAttachments)
+func (c *Client) GenerateExportAndWait(ctx context.Context, format ExportFormat, includeAttachments bool, includePrivate bool) (*FileOperation, error) {
+	op, err := c.GenerateExport(ctx, format, includeAttachments, includePrivate)
 	if err != nil {
 		return nil, err
 	}
