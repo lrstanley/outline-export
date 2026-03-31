@@ -207,7 +207,6 @@ func downloadExport(ctx context.Context, client *api.Client, operation *api.File
 	}
 
 	for _, f := range zr.File {
-
 		// Sanitize parts.
 		parts := strings.Split(f.Name, "/")
 		for i := range parts {
