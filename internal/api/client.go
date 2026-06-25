@@ -12,6 +12,7 @@ import (
 	"iter"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -26,6 +27,7 @@ type Config struct {
 	BaseURL     string
 	Token       string
 	Logger      *slog.Logger
+	RewriteRedirect bool
 	HTTPTimeout time.Duration
 }
 
@@ -57,12 +59,36 @@ func NewClient(config *Config) (*Client, error) {
 		return nil, errors.New("token is required")
 	}
 
-	return &Client{
+	client := Client{
 		HTTPClient: &http.Client{
 			Timeout: config.HTTPTimeout,
 		},
 		Config: config,
-	}, nil
+	}
+	client.HTTPClient.CheckRedirect = client.checkRedirect
+
+	return &client, nil
+}
+
+func (c *Client) checkRedirect(req *http.Request, via []*http.Request) error {
+	if c.Config.RewriteRedirect {
+		baseUrl, err := url.Parse(c.Config.BaseURL)
+		if err != nil {
+			return err
+		}
+
+		oldURL := req.URL.String()
+
+		// Rewrite target URL
+		req.URL.Scheme = baseUrl.Scheme
+		req.URL.Host = baseUrl.Host
+		// Let's keep Host-header as-is, to satisfy outline
+		//req.Host = "outline-baseurl.com"
+
+		slog.Info("redirect rewritten", oldURL, req.URL)
+	}
+
+	return nil
 }
 
 // GenerateExport generates an export of all collections. Note that it will likely
