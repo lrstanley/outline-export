@@ -264,6 +264,10 @@ func downloadExport(ctx context.Context, client *api.Client, operation *api.File
 		}
 
 		slog.InfoContext(ctx, "creating file", "path", name)
+		if err = os.MkdirAll(filepath.Dir(path.Join(cli.Flags.ExportPath, name)), 0o700); err != nil {
+			_ = inf.Close()
+			return fmt.Errorf("failed to create parent dirs for %q: %w", name, err)
+		}
 		outf, err := os.OpenFile(path.Join(cli.Flags.ExportPath, name), os.O_CREATE|os.O_WRONLY, 0o600)
 		if err != nil {
 			_ = inf.Close()
