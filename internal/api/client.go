@@ -71,22 +71,15 @@ func NewClient(config *Config) (*Client, error) {
 }
 
 func (c *Client) checkRedirect(req *http.Request, via []*http.Request) error {
-	if c.Config.RewriteRedirect {
-		baseUrl, err := url.Parse(c.Config.BaseURL)
-		if err != nil {
-			return err
-		}
-
-		oldURL := req.URL.String()
-
-		// Rewrite target URL
-		req.URL.Scheme = baseUrl.Scheme
-		req.URL.Host = baseUrl.Host
-		// Let's keep Host-header as-is, to satisfy outline
-		//req.Host = "outline-baseurl.com"
-
-		slog.Info("redirect rewritten", oldURL, req.URL)
+	if !c.Config.RewriteRedirect {
+		return nil
 	}
+	baseUrl, err := url.Parse(c.Config.BaseURL)
+	if err != nil {
+		return err
+	}
+	req.URL.Scheme = baseUrl.Scheme
+	req.URL.Host = baseUrl.Host
 
 	return nil
 }
