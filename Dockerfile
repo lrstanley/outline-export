@@ -1,4 +1,4 @@
-FROM golang:latest as build
+FROM golang:latest AS build
 WORKDIR /build
 
 COPY . /build/
@@ -8,7 +8,7 @@ RUN \
 	--mount=type=cache,target=/go \
 	make build
 
-FROM alpine:3.23
+FROM alpine:3.24
 RUN apk add --no-cache ca-certificates
 COPY --from=build /build/outline-export /usr/local/bin/outline-export
 
