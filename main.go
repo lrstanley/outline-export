@@ -49,6 +49,7 @@ type Flags struct {
 	ExportPath         string        `name:"export-path" env:"EXPORT_PATH" required:"" help:"Path to export the file to. If extract is enabled, this will be the directory to extract the export to."`
 	Filters            []string      `name:"filters" env:"FILTERS" help:"Filters the export to only include certain files (when using --extract). This is a glob pattern, and it matches the files/folders inside of the export zip, not necessarily collections/document exact names."`
 	HTTPTimeout        time.Duration `name:"http-timeout" env:"HTTP_TIMEOUT" default:"${HTTP_TIMEOUT}" help:"Timeout for HTTP requests to the Outline server"`
+	RewriteRedirect    bool          `name:"rewrite-redirect" env:"REWRITE_REDIRECT" help:"Rewrite redirect URL to match Base URL"`
 }
 
 func main() {
@@ -60,6 +61,7 @@ func main() {
 		Token:       cli.Flags.Token,
 		Logger:      logger,
 		HTTPTimeout: cli.Flags.HTTPTimeout,
+		RewriteRedirect: cli.Flags.RewriteRedirect,
 	})
 	if err != nil {
 		logger.Error("failed to create client", "error", err)
