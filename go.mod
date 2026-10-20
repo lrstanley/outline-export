@@ -1,10 +1,10 @@
 module github.com/lrstanley/outline-export
 
-go 1.26.1
+go 1.27.0
 
 require (
-	github.com/alecthomas/kong v1.15.0
-	github.com/lrstanley/clix/v2 v2.0.1
+	github.com/alecthomas/kong v1.16.1
+	github.com/lrstanley/clix/v2 v2.0.5
 )
 
-require github.com/lmittmann/tint v1.1.3 // indirect
+require github.com/lmittmann/tint v1.2.1 // indirect
