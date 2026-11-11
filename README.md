@@ -35,9 +35,6 @@
   <a href="https://pkg.go.dev/github.com/lrstanley/outline-export">
     <img title="Go Documentation" src="https://pkg.go.dev/badge/github.com/lrstanley/outline-export?style=flat-square">
   </a>
-  <a href="https://goreportcard.com/report/github.com/lrstanley/outline-export">
-    <img title="Go Report Card" src="https://goreportcard.com/badge/github.com/lrstanley/outline-export?style=flat-square">
-  </a>
 </p>
 <p align="center">
   <a href="https://github.com/lrstanley/outline-export/issues?q=is:open+is:issue+label:bug">
